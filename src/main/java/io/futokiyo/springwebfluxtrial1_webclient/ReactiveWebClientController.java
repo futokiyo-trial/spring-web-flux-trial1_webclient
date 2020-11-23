@@ -13,14 +13,14 @@ public class ReactiveWebClientController {
 	  private static final String DELAY_SERVICE_URL_AA = "http://localhost:8080/spring-web-flux-trial1-0.0.1-SNAPSHOT/fluxtest1/aa";
 	  
 	  private static final String DELAY_SERVICE_URL_AIUEO = "http://localhost:8080/spring-web-flux-trial1-0.0.1-SNAPSHOT/fluxtest1/aiueo";
-
-	  private final WebClient aaClient = WebClient.create(DELAY_SERVICE_URL_AA);
-	  
-	  private final WebClient aiueoClient = WebClient.create(DELAY_SERVICE_URL_AA);
 	  
 	  @GetMapping("aa-reactive/{delayMillis}")
 	  public Mono<String> getAa(@PathVariable String delayMillis) {
-	    return aaClient.get()
+		WebClient webClient = WebClient.builder()
+				  .baseUrl(DELAY_SERVICE_URL_AA)
+				  .build();
+		  
+	    return webClient.get()
 	        .uri("/" + delayMillis)
 	        .retrieve()
 	        .bodyToMono(String.class)
@@ -29,7 +29,11 @@ public class ReactiveWebClientController {
 	  
 	  @GetMapping("aiueo-reactive/{delayMillis}")
 	  public Flux<String> getAiueo(@PathVariable String delayMillis) {
-	    return aiueoClient.get()
+		WebClient webClient = WebClient.builder()
+				  .baseUrl(DELAY_SERVICE_URL_AIUEO)
+				  .build();
+		  
+	    return webClient.get()
 	        .uri("/" + delayMillis)
 	        .retrieve()
 	        .bodyToFlux(String.class)
